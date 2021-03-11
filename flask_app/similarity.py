@@ -74,10 +74,10 @@ class Similarity(object):
         similarity = round(numerator / denominator, 2)
         return similarity
 
-    def get_result(self, text_list):
-        sample_a = self.tokenize(text_list[0])
-        sample_b = self.tokenize(text_list[1])
-        all_chars = self.get_all_chars(text_list)
+    def get_result(self, text_a, text_b):
+        sample_a = self.tokenize(text_a)
+        sample_b = self.tokenize(text_b)
+        all_chars = self.get_all_chars([text_a, text_b])
         word_dict_a = self.get_work_frequency(sample_a, all_chars)
         word_dict_b = self.get_work_frequency(sample_b, all_chars)
         tf_a = self.compute_tf(word_dict_a, sample_a)

@@ -6,4 +6,6 @@ services:
     volumes:
       - .:/usr/src/app
     ports:
-      - 5000:80
+      - 5001:80
+    environment:
+      FLASK_ENV: development

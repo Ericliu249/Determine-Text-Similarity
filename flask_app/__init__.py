@@ -1,13 +1,11 @@
 from flask import Flask, request, jsonify
 import markdown
 import os
+from datetime import datetime
 from .similarity import Similarity
 
 app = Flask(__name__)
 
-# @app.route('/')
-# def hello_world():
-#     return 'Hello, World!'
 @app.route("/")
 def index():
     """Present some documentation"""
@@ -25,8 +23,13 @@ def index():
 def check_similarity():
     """Present some documentation"""
     request_data = request.get_json()
-    text_list = request_data['text_list']
-    similarity = Similarity().get_result(text_list)
+    stopwords = request.args.get('stopwords', True)
+    text_a = request_data['text_a']
+    text_b = request_data['text_b']
+    if stopwords == 'false' or stopwords == 'False':
+        similarity = Similarity(False).get_result(text_a, text_b)
+    else:
+        similarity = Similarity(True).get_result(text_a, text_b)
     return jsonify({
         'message': "Computed the similarity between two texts successfully",
         'similarity': similarity
