@@ -1,10 +1,17 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import markdown
 import os
-from datetime import datetime
 from .similarity import Similarity
 
 app = Flask(__name__)
+CORS(app)
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+    response.headers.add('Access-Control-Allow-Headers', 'GET, POST, PATCH, DELETE, OPTIONS')
+    return response
 
 @app.route("/")
 def index():
@@ -31,6 +38,39 @@ def check_similarity():
     else:
         similarity = Similarity(True).get_result(text_a, text_b)
     return jsonify({
+        'success': True,
         'message': "Computed the similarity between two texts successfully",
         'similarity': similarity
     })
+
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({
+        "success": False,
+        "error": 404,
+        "message": "resource not found"
+    }), 404
+
+@app.errorhandler(422)
+def unprocessable(error):
+    return jsonify({
+        "success": False,
+        "error": 422,
+        "message": "unprocessable"
+    }), 422
+
+@app.errorhandler(400)
+def bad_request(error):
+    return jsonify({
+        "success": False,
+        "error": 400,
+        "message": "bad request"
+    }), 400
+
+@app.errorhandler(405)
+def not_allowed(error):
+    return jsonify({
+        "success": False,
+        "error": 405,
+        "message": "method not allowed"
+    }), 405
