@@ -1,76 +1,141 @@
-# Fetch Rewards Coding Exercise - Data Engineer
+# Text Similarity
 
-## What do I need to do?
+- Author: Yang Liu (Eric)
+- Contact: eric.liu.249@gmail.com
 
-This challenge will focus on the similarity between two texts. Your objective is to write a program that takes as inputs two texts and uses a metric to determine how similar they are. Documents that are exactly the same should get a score of 1, and documents that don’t have any words in common should get a score of 0. Please use the samples below to develop your application.
+## Objective
 
-You will have to make a number of decisions as you develop this solution:
+The goal of this project is to run a simple flaks web app inside a docker container that can determine the similiarity between two texts through a HTTP request. Documents that are exactly the same should get a score of 1, and documents that don’t have any words in common should get a score of 0. Please use the samples below to develop your application.
 
-- Do you count punctuation or only words?
-- Which words should matter in the similarity comparison?
-- Do you care about the ordering of words?
-- What metric do you use to assign a numerical value to the similarity?
-- What type of data structures should be used? (Hint: Dictionaries and lists are particularly helpful data structures that can be leveraged to calculate the similarity of two pieces of text.)
+## Considerations
 
-## What are the requirements?
+1. **Tokenization**
 
-1. The document similarity algorithm does not need to perform well, and you don’t need to account for all edge cases. Focus on having some fun with it and producing code that we can discuss together.
+   The process of breaking a stream of textual content up into words, terms, symbols, or some other meaningful elements called tokens. The puncation will be **removed** in this step as they are mostly meaningless.
 
-2. Use the 3 sample texts provided below to develop your app. Samples 1 and 2 should be more similar than samples 1 and 3.
+2. **Stopwords**
 
-3. You may choose any language you like, but do not import any libraries.
+    - Stop words: a set of commonly used words, have very little meaning, and cannot differentiate a text from others, such as "and", "the" etc. 
+    - Stop words are typically ignored in NLP processing or by search engine
+    - Stop words usually are application specific. You can define your own stop words!
+    - In this application, stop words are **ignored** for the given texts. If you want to consider stop words when doing the comparision, add ***stopwords=False*** when making the **POST /similarity** request (see example below)
 
-4. Examples of libraries you **CANNOT** use
+3. **Ordering of words**
 
-5. 1. scikit-learn
-   2. NLTK
-   3. spaCy
-   4. numpy
+   The ordering of words are not considered for the sake of simplicity (and most of the time ordering is also not important). 
 
-6. The code, at a minimum, must run. Please provide clear instructions on how to run it.
+4. **Mesure for similiarity**
 
-7. When complete, please upload your codebase to a public Git repo (GitHub, Bitbucket, etc.) and email us the link. Please double-check this is publicly accessible.
+   - The app will first count the **word frequency** after the tokening the input texts. 
 
-Please assume the evaluator does not have prior experience executing programs in your chosen language. Therefore, please include any documentation necessary to accomplish the above requirements.
+   - Calculate the **Term Frequency and Inverse Dcoument Frequency** (TF-IDF)
 
-## The Samples
+     - **Term Frequecy (TF)**
 
-### Sample 1
+       - Measures how frequently a term, say w, occurs in a document, say 𝑑. Since every document is different in length, it is possible that a term would appear much more times in long documents than shorter ones. 
+       - Thus, the frequency of 𝑤 in 𝑑, denoted as 𝑓𝑟𝑒𝑞(𝑤,𝑑) is often divided by the document length (a.k.a. the total number of terms in the document, denoted as |𝑑|) as a way of normalization: 𝑡𝑓(𝑤,𝑑)=𝑓𝑟𝑒𝑞(𝑤,𝑑)/|𝑑|
 
-The easiest way to earn points with Fetch Rewards is to just shop for the products you already love. If you have any participating brands on your receipt, you'll get points based on the cost of the products. You don't need to clip any coupons or scan individual barcodes. Just scan each grocery receipt after you shop and we'll find the savings for you.
+     - **Inverse Document Frequency (IDF)**
 
-### Sample 2
+       - Measures how important a term is within the corpus.
 
-The easiest way to earn points with Fetch Rewards is to just shop for the items you already buy. If you have any eligible brands on your receipt, you will get points based on the total cost of the products. You do not need to cut out any coupons or scan individual UPCs. Just scan your receipt after you check out and we will find the savings for you.
+       - However it is known that certain terms, such as "is", "of", and "that", may appear a lot of times but have little importance.
 
-### Sample 3
+       - Thus we need to weigh down the frequent terms while scale up the rare ones.
 
-We are always looking for opportunities for you to earn more points, which is why we also give you a selection of Special Offers. These Special Offers are opportunities to earn bonus points on top of the regular points you earn every time you purchase a participating brand. No need to pre-select these offers, we'll give you the points whether or not you knew about the offer. We just think it is easier that way.
+       - Let |𝐷||D| denote the number of documents, 𝑑𝑓(𝑤,𝐷)df(w,D) denotes the number of documents with term 𝑤w in them. Then,𝑖𝑑𝑓(𝑤)=𝑙𝑛(|𝐷|/𝑑𝑓(𝑤,𝐷))+1
 
-## Bonus Points
+         Or a smoothed version:𝑖𝑑𝑓(𝑤)=𝑙𝑛((|𝐷|+1)/(𝑑𝑓(𝑤,𝐷)+1))+1
 
-Package this application as a web service that performs the comparison in response to a POST request containing the two texts in the body of the payload. You may use external libraries (i.e., Flask).
+     - **TF-IDF**
 
-Take it a step further and package the web service in a Docker container that can be built and run locally or pulled down and run via Docker Hub.
+       Let 𝑠(𝑤,𝑑)=𝑡𝑓(𝑤,𝑑)∗𝑖𝑑𝑓(𝑤)s(w,d)=tf(w,d)∗idf(w), normalize the TF-IDF score of each word in a document normalized by the Euclidean norm, then
 
-## How do I submit my exercise?
+       𝑡𝑓𝑖𝑑𝑓(𝑤,𝑑)=𝑠(𝑤,𝑑)√∑𝑤∈𝑑𝑠(𝑤,𝑑)2
 
-Provide a link to a public repository (i.e., GitHub, Bitbucket) to your recruiter. Please do not send files directly via email.
+   - Use the **Cosine Similarity** to measure the similiary between two texts
 
-## FAQs
+     Cosine Similarity is the similarity between two documents is a function of the angle between their vectors in the if-idf vector space.
 
-### How will this exercise be evaluated?
+## Prerequisite
 
-An engineer will review the code you submit. At a minimum they must be able to run the program, and the program must produce the expected results. You should provide any necessary documentation within the repository. While your solution does not need to be fully production ready, you are being evaluated so put your best foot forward!
+1. Ensure docker is running on you laptop.
+   1. To install docker, go to https://docs.docker.com/get-docker, check the version based on the platform you want to run.
+   2. After the installation, start the docker desktop.
+2. The flask app runs on port **5001**. Please check the port is not taken by other application/service before you run the container.
 
-### I have questions about the problem statement.
 
-For any requirements not specified above, use your best judgement to determine expected result. You can elaborate on your decisions via the documentation you provide in your repo.
 
-### Can I provide a private repository?
+## Start the application
 
-If at all possible, we prefer a public repository because we do not know which engineer will be evaluating your submission. Providing a public repository ensures a speedy review of your submission. If you are still uncomfortable providing a public repository, you can work with your recruiter to provide access to the reviewing engineer.
+1. Clone the code to your laptop
+2. Navigate inside the direcotry Text-Similarity-Docker-Flask-App
+3. Run command **docker-compose up**
+4. Now the application is running on http://localhost:5001
 
-### How long do I have to complete the exercise?
+## API
 
-There is no time limit for the exercise. Out of respect for your time, we designed this exercise with the intent that it should take you a few hours. But, please take as much time as you need to complete the work.
+- GET ${hostname}:5001
+
+  - Description
+
+    Return the README.md of this project
+
+  - Parameter Values
+
+    None
+
+  - Reuquest Body
+
+    None
+
+  - Response Code
+
+    200
+
+  - Example
+
+    ```
+    curl http://localhost:5001
+    ```
+
+    
+
+- POST ${hostname}:5001/similiary?stopwords=True
+
+  - Description
+
+    Return the similiary score between two given texts. Documents that are exactly the same should get a score of 1, and documents that don’t have any words in common should get a score of 0. Please use the samples below to develop your application.
+
+  - Parameter Values:
+
+    - stopwords (*optional*): Boolean. True (default) or False. If value is True, the stopwords are considered when comparaing the texts. If value is False, stopwords will be treated as normal words and will have impact on the similiary score.
+
+  - Request Body
+
+    ```json
+    {
+      "text_a": "sample text a",
+      "text_b": "sample text b"
+    }
+    ```
+
+  - Reponse Code
+
+    200
+
+  - Example
+
+    ```
+    curl -X POST -H "Content-Type: application/json" -d '{"text_a": "sample text a", "text_b": "sample text b"}' http://localhost:5001/similarity
+    ```
+
+  - Sample Response
+
+    ```json
+    {
+        "message": "Computed the similarity between two texts successfully",
+        "similarity": 0.75,
+        "success": true
+    }
+    ```
