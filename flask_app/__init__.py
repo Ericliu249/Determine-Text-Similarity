@@ -31,17 +31,20 @@ def check_similarity():
     """Present some documentation"""
     request_data = request.get_json()
     stopwords = request.args.get('stopwords', True)
-    text_a = request_data['text_a']
-    text_b = request_data['text_b']
-    if stopwords == 'false' or stopwords == 'False':
-        similarity = Similarity(False).get_result(text_a, text_b)
-    else:
-        similarity = Similarity(True).get_result(text_a, text_b)
-    return jsonify({
-        'success': True,
-        'message': "Computed the similarity between two texts successfully",
-        'similarity': similarity
-    })
+    try:
+        text_a = request_data['text_a']
+        text_b = request_data['text_b']
+        if stopwords == 'false' or stopwords == 'False':
+            similarity = Similarity(False).get_result(text_a, text_b)
+        else:
+            similarity = Similarity(True).get_result(text_a, text_b)
+        return jsonify({
+            'success': True,
+            'message': "Computed the similarity between two texts successfully",
+            'similarity': similarity
+        })
+    except:
+        abort(422)
 
 @app.errorhandler(404)
 def not_found(error):
