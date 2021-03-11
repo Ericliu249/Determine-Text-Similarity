@@ -9,26 +9,34 @@ CORS(app)
 
 @app.after_request
 def after_request(response):
+    """Add headers to response
+    """
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
     response.headers.add('Access-Control-Allow-Headers', 'GET, POST, PATCH, DELETE, OPTIONS')
     return response
 
 @app.route("/")
 def index():
-    """Present some documentation"""
+    """Get the README.md
+    """
+    try:
+        # Open the README file
+        with open(os.path.dirname(app.root_path) + '/README.md', 'r') as markdown_file:
 
-    # Open the README file
-    with open(os.path.dirname(app.root_path) + '/Data Challenge.md', 'r') as markdown_file:
+            # Read the content of the file
+            content = markdown_file.read()
 
-        # Read the content of the file
-        content = markdown_file.read()
+            # Convert to HTML
+            readme = markdown.markdown(content)
+            return readme
+    except:
+        abort(422)
 
-        # Convert to HTML
-        return markdown.markdown(content)
 
 @app.route("/similarity", methods=['POST'])
 def check_similarity():
-    """Present some documentation"""
+    """Takes two texts and return the similarity between them
+    """
     request_data = request.get_json()
     stopwords = request.args.get('stopwords', True)
     try:
@@ -48,6 +56,8 @@ def check_similarity():
 
 @app.errorhandler(404)
 def not_found(error):
+    """Returns an JSON error message if the requsted resource is not found
+    """
     return jsonify({
         "success": False,
         "error": 404,
@@ -56,6 +66,8 @@ def not_found(error):
 
 @app.errorhandler(422)
 def unprocessable(error):
+    """Returns an JSON error message if the requst is not processable
+    """
     return jsonify({
         "success": False,
         "error": 422,
@@ -64,6 +76,8 @@ def unprocessable(error):
 
 @app.errorhandler(400)
 def bad_request(error):
+    """Returns an JSON error message if a user made an inappropriate requst
+    """
     return jsonify({
         "success": False,
         "error": 400,
@@ -72,6 +86,8 @@ def bad_request(error):
 
 @app.errorhandler(405)
 def not_allowed(error):
+    """Returns an JSON error message if the request method is not allowed
+    """
     return jsonify({
         "success": False,
         "error": 405,
