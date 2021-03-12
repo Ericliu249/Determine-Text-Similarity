@@ -57,7 +57,7 @@ The goal of this project is to run a simple flaks web app inside a docker contai
 
      Cosine Similarity is the similarity between two documents is a function of the angle between their vectors in the if-idf vector space.
 
-## Prerequisite
+## Prerequisites
 
 1. Ensure docker is running on you laptop.
    1. To install docker, go to https://docs.docker.com/get-docker, check the version based on the platform you want to run.
@@ -100,6 +100,23 @@ Access the application via http://localhost:5001
 
     ```
     curl http://localhost:5001
+    ```
+
+  - Sample Response
+
+    README of the this project
+
+    ```
+    <h1>Text Similarity</h1>
+    <ul>
+    	<li>Author: Yang Liu (Eric)</li>
+    	<li>Contact: eric.liu.249@gmail.com</li>
+    </ul>
+    <h2>Objective</h2>
+    <p>The goal of this project is to run a simple flaks web app
+    ...
+    ...
+    ...
     ```
 
     
