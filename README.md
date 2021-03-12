@@ -66,12 +66,15 @@ The goal of this project is to run a simple flaks web app inside a docker contai
 
 
 
-## Start the application
+## Installation
 
-1. Clone the code to your laptop
-2. Navigate inside the direcotry Text-Similarity-Docker-Flask-App
-3. Run command **docker-compose up**
-4. Now the application is running on http://localhost:5001
+```
+$ git clone https://github.com/Ericliu249/Text-Similarity-Docker-Flask-App.git
+$ cd Text-Similarity-Docker-Flask-App
+$ docker-compose up
+```
+
+Access the application via http://localhost:5001
 
 ## API
 
