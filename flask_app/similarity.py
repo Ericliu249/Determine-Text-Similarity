@@ -17,7 +17,7 @@ class Similarity(object):
             tokens (list)
         """
         tokens = re.findall(r"\w+", text)
-        stop_words = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 
+        stop_words = {'i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 
         'you', "you're", "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 
         'yourselves', 'he', 'him', 'his', 'himself', 'she', "she's", 'her', 'hers', 
         'herself', 'it', "it's", 'its', 'itself', 'they', 'them', 'their', 'theirs', 
@@ -36,12 +36,12 @@ class Similarity(object):
         "didn't", 'doesn', "doesn't", 'hadn', "hadn't", 'hasn', "hasn't", 'haven',
         "haven't", 'isn', "isn't", 'ma', 'mightn', "mightn't", 'mustn', "mustn't", 
         'needn', "needn't", 'shan', "shan't", 'shouldn', "shouldn't", 'wasn', "wasn't", 
-        'weren', "weren't", 'won', "won't", 'wouldn', "wouldn't", 'film', 'films']
+        'weren', "weren't", 'won', "won't", 'wouldn', "wouldn't", 'film', 'films'}
         if self.stop_words:
             tokens = [token for token in tokens if token not in stop_words]
         return tokens
 
-    def get_all_chars(self, text_list):
+    def get_all_words(self, text_list):
         """Get a dict of tokens that contains all characters for all texts
 
         Args:
@@ -51,8 +51,8 @@ class Similarity(object):
             set
         """
         tokenized_texts = [self.tokenize(text) for text in text_list]
-        all_chars = set().union(*tokenized_texts)
-        return all_chars
+        all_words = set().union(*tokenized_texts)
+        return all_words
 
     def get_word_frequency(self, words, all_chars):
         """Get the word frequency for a tokenized text
