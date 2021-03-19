@@ -54,7 +54,7 @@ class Similarity(object):
         all_chars = set().union(*tokenized_texts)
         return all_chars
 
-    def get_work_frequency(self, words, all_chars):
+    def get_word_frequency(self, words, all_chars):
         """Get the word frequency for a tokenized text
 
         Args:
@@ -151,8 +151,8 @@ class Similarity(object):
         sample_a = self.tokenize(text_a)
         sample_b = self.tokenize(text_b)
         all_chars = self.get_all_chars([text_a, text_b])
-        word_dict_a = self.get_work_frequency(sample_a, all_chars)
-        word_dict_b = self.get_work_frequency(sample_b, all_chars)
+        word_dict_a = self.get_word_frequency(sample_a, all_chars)
+        word_dict_b = self.get_word_frequency(sample_b, all_chars)
         tf_a = self.compute_tf(word_dict_a, sample_a)
         tf_b = self.compute_tf(word_dict_b, sample_b)
         doc_list = [word_dict_a, word_dict_b]
