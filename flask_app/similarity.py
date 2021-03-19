@@ -48,10 +48,10 @@ class Similarity(object):
             text_list ([list]): A list of raw texts
 
         Returns:
-            dict
+            set
         """
         tokenized_texts = [self.tokenize(text) for text in text_list]
-        all_chars = list(set().union(*tokenized_texts))
+        all_chars = set().union(*tokenized_texts)
         return all_chars
 
     def get_work_frequency(self, words, all_chars):
@@ -59,7 +59,7 @@ class Similarity(object):
 
         Args:
             words (list): a list of tokens for a text
-            all_chars (dict): a dictionary of tokens for all texts
+            all_chars (set): a set of unique tokens for all texts
 
         Returns:
             dict: the word frequency for a text
@@ -161,3 +161,13 @@ class Similarity(object):
         tfidf_b = self.compute_tfidf(tf_b, idf)
         result = self.compute_similarity(tfidf_a, tfidf_b)
         return result
+
+
+text_a = "The easiest way to earn points with Fetch Rewards is to just shop for the products you already love. If you have any participating brands on your receipt, you'll get points based on the cost of the products. You don't need to clip any coupons or scan individual barcodes. Just scan each grocery receipt after you shop and we'll find the savings for you."
+
+text_b = "The easiest way to earn points with Fetch Rewards is to just shop for the items you already buy. If you have any eligible brands on your receipt, you will get points based on the total cost of the products. You do not need to cut out any coupons or scan individual UPCs. Just scan your receipt after you check out and we will find the savings for you."
+
+s = Similarity()
+
+similarity = s.get_result(text_a, text_b)
+print(similarity)
