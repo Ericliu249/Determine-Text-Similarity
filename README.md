@@ -5,8 +5,7 @@
 
 ## Objective
 
-The goal of this project is to run a simple flaks web app inside a docker container that can determine the similiarity between two texts through a HTTP request. Documents that are exactly the same should get a score of 1, and documents that don’t have any words in common should get a score of 0. Please use the samples below to develop your application.
-
+The goal of this project is to run a simple flaks web app inside a docker container that can determine the similiarity between two texts through a HTTP request. Documents that are exactly the same should get a score of 1, and documents that don’t have any words in common should get a score of 0.
 ## Considerations
 
 1. **Tokenization**
