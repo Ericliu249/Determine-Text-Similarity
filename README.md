@@ -77,7 +77,7 @@ Access the application via http://localhost:5001
 
 ## API
 
-- GET ${hostname}:5001
+- `GET ${hostname}:5001`
 
   - Description
 
@@ -120,7 +120,7 @@ Access the application via http://localhost:5001
 
     
 
-- POST ${hostname}:5001/similiary?stopwords=True
+- `POST ${hostname}:5001/similiary?stopwords=True`
 
   - Description
 
